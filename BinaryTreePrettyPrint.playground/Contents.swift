@@ -20,8 +20,8 @@ func prettyPrint<T: CustomStringConvertible>(root: TreeNode<T>) -> String {
   let strings = getStrings(x: rootWidth, y: 0, node: root)
   var lines = [Int: [StringPoint]]()
   for stringPoint in strings {
-    if var arr = lines[stringPoint.y] {
-      arr.append(stringPoint)
+    if lines[stringPoint.y] != nil {
+      lines[stringPoint.y]!.append(stringPoint)
     } else {
       lines[stringPoint.y] = [stringPoint]
     }
@@ -67,7 +67,7 @@ func getStrings<T: CustomStringConvertible>(x: Int, y: Int, node: TreeNode<T>) -
     let width = getWidth(node: rightNode)
     var index = 0
     while index < (width + 1)/2 {
-      result.append(StringPoint(x: x - index - 1, y: y + index + 1, val: "/"))
+      result.append(StringPoint(x: x + index + 1, y: y + index + 1, val: "\\"))
       index += 1
     }
     result.append(contentsOf: getStrings(x: x + index + 1, y: y + index + 1, node: rightNode))
