@@ -1,10 +1,10 @@
 import UIKit
 
-class TreeNode {
-  let value: Int
+class TreeNode<T: CustomStringConvertible> {
+  let value: T
   var left: TreeNode?
   var right: TreeNode?
-  init(_ value: Int) {
+  init(_ value: T) {
     self.value = value
   }
 }
@@ -15,7 +15,26 @@ struct StringPoint {
   let val: String
 }
 
-func getWidth(node: TreeNode) -> Int {
+func prettyPrint<T: CustomStringConvertible>(root: TreeNode<T>) -> String {
+  let rootWidth = (getWidth(node: root) + 1 )/2
+  let strings = getStrings(x: rootWidth, y: 0, node: root)
+  var lines = [Int: [StringPoint]]()
+  for stringPoint in strings {
+    if var arr = lines[stringPoint.y] {
+      arr.append(stringPoint)
+    } else {
+      lines[stringPoint.y] = [stringPoint]
+    }
+  }
+  
+  var result = ""
+  for line in lines.keys.sorted() {
+    result += flatten(points: lines[line]!) + "\n"
+  }
+  return result
+}
+
+func getWidth<T: CustomStringConvertible>(node: TreeNode<T>) -> Int {
   var width = 0
   if let leftNode = node.left {
     width += getWidth(node: leftNode)
@@ -24,13 +43,13 @@ func getWidth(node: TreeNode) -> Int {
     width += getWidth(node: rightNode)
   }
   
-  width += String(node.value).count
+  width += node.value.description.count
   return width
 }
 
-func getStrings(x: Int, y: Int, node: TreeNode) -> [StringPoint] {
+func getStrings<T: CustomStringConvertible>(x: Int, y: Int, node: TreeNode<T>) -> [StringPoint] {
   var result: [StringPoint] = []
-  let nodeValue = String(node.value)
+  let nodeValue = node.value.description
   let new = StringPoint(x: x - nodeValue.count / 2, y: y, val: nodeValue)
   result.append(new)
   
@@ -58,8 +77,28 @@ func getStrings(x: Int, y: Int, node: TreeNode) -> [StringPoint] {
 
 func flatten(points: [StringPoint]) -> String {
   var result = ""
+  var x = 0
   for p in points {
-    
+    result += String(repeating: " ", count: p.x - x)
+    result += p.val
+    x = result.count
   }
+  return result
 }
 
+let node1 = TreeNode(1)
+let node2 = TreeNode(2)
+let node3 = TreeNode(3)
+let node4 = TreeNode(4)
+let node5 = TreeNode(5)
+let node6 = TreeNode(6)
+let node7 = TreeNode(7)
+
+node2.left = node1
+node2.right = node3
+node4.left = node2
+node4.right = node6
+node6.left = node5
+node6.right = node7
+
+print(prettyPrint(root: node2))
