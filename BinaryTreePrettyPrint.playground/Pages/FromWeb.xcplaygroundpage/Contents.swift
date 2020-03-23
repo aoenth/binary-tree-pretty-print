@@ -16,7 +16,7 @@ struct StringPoint {
 }
 
 func prettyPrint<T: CustomStringConvertible>(root: TreeNode<T>) -> String {
-  let rootWidth = (getWidth(node: root) + 1 )/2
+  let rootWidth = (getWidth(node: root) + 1)/2
   let strings = getStrings(x: rootWidth, y: 0, node: root)
   var lines = [Int: [StringPoint]]()
   for stringPoint in strings {
@@ -79,7 +79,8 @@ func flatten(points: [StringPoint]) -> String {
   var result = ""
   var x = 0
   for p in points {
-    result += String(repeating: " ", count: p.x - x)
+    let count = max(p.x - x, 0)
+    result += String(repeating: " ", count: count)
     result += p.val
     x = result.count
   }
@@ -97,8 +98,8 @@ let node7 = TreeNode(7)
 node2.left = node1
 node2.right = node3
 node4.left = node2
-node4.right = node6
+//node4.right = node6
 node6.left = node5
 node6.right = node7
 
-print(prettyPrint(root: node2))
+print(prettyPrint(root: node4))
